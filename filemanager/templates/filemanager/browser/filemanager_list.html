@@ -37,7 +37,7 @@
       {% endif %}
       <td>{{file.filesize}}</td>
       <td>{{file.filedate}}</td>
-      <td><a href="#{{file.filepath}}">{% trans "Details" %}</a></td>
+      <td><a href="{% url 'filemanager:detail' %}?path={{file.filepath}}">{% trans "Details" %}</a></td>
     </tr>
     {% empty %}
     <tr>

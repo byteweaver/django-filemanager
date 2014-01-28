@@ -58,3 +58,31 @@ class BrowserView(TemplateView):
             })
 
         return context
+
+
+class DetailView(TemplateView):
+    template_name = 'filemanager/browser/filemanager_detail.html'
+
+    def get_relpath(self):
+        if 'path' in self.request.GET:
+            return self.request.GET['path']
+        return ''
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+
+        storage = DefaultStorage()
+
+        path = self.get_relpath()
+        filename = path.rsplit('/', 1)[-1]
+        abspath = get_abspath(path)
+        print(path)
+
+        context['file'] = {
+            'filepath': path[:-len(filename)],
+            'filename': filename,
+            'filesize': sizeof_fmt(storage.size(abspath)),
+            'filedate': storage.modified_time(abspath)
+        }
+
+        return context

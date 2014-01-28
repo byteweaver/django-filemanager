@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+{{file}}
+
+<a href="{% url 'filemanager:browser' %}?path={{file.filepath}}" class="btn">{% trans "Back" %}</a>
+
+{% endblock %}
