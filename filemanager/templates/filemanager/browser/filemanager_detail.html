@@ -3,8 +3,16 @@
 {% load i18n %}
 
 {% block content %}
-{{file}}
+<dl>
+  <dt>{% trans "Filename" %}</dt>
+  <dd>{{file.filename}}</dd>
+  <dt>{% trans "Filesize" %}</dt>
+  <dd>{{file.filesize}}</dd>
+  <dt>{% trans "Filedate" %}</dt>
+  <dd>{{file.filedate}}</dd>
+  <dt>{% trans "Filepath" %}</dt>
+  <dd>{{file.filepath}}</dd>
+</dl>
 
 <a href="{% url 'filemanager:browser' %}?path={{file.filepath}}" class="btn">{% trans "Back" %}</a>
-
 {% endblock %}
