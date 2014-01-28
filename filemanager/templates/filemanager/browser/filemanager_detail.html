@@ -3,6 +3,8 @@
 {% load i18n %}
 
 {% block content %}
+{% include "filemanager/filemanager_breadcrumbs.html" %}
+
 <dl>
   <dt>{% trans "Filename" %}</dt>
   <dd>{{file.filename}}</dd>
