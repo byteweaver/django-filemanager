@@ -11,31 +11,42 @@ def get_abspath(relpath):
     return os.path.join(MEDIA_ROOT, relpath)
 
 
-class BrowserView(TemplateView):
-    template_name = 'filemanager/browser/filemanager_list.html'
+class FilemanagerMixin(object):
+    def __init__(self, *args, **kwargs):
+
+        self.storage = DefaultStorage()
+
+        return super(FilemanagerMixin, self).__init__(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(FilemanagerMixin, self).get_context_data(*args, **kwargs)
+
+        context['breadcrumbs'] = [{
+            'label': 'Filemanager',
+            'url': '',
+        }] + generate_breadcrumbs(self.get_relpath())
+
+        return context
 
     def get_relpath(self):
         if 'path' in self.request.GET:
             return self.request.GET['path']
         return ''
 
+
+class BrowserView(FilemanagerMixin, TemplateView):
+    template_name = 'filemanager/browser/filemanager_list.html'
+
     def get_context_data(self, **kwargs):
         context = super(BrowserView, self).get_context_data(**kwargs)
 
-        storage = DefaultStorage()
-
         path = self.get_relpath()
-
-        context['breadcrumbs'] = [{
-            'label': 'Filemanager',
-            'url': '',
-        }] + generate_breadcrumbs(path)
 
         context['files'] = []
 
         browse_path = os.path.join(MEDIA_ROOT, path)
 
-        directories, files = storage.listdir(browse_path)
+        directories, files = self.storage.listdir(browse_path)
 
         for directoryname in directories:
             path = get_abspath(os.path.join(browse_path, directoryname))
@@ -44,7 +55,7 @@ class BrowserView(TemplateView):
                 'filetype': 'Directory',
                 'filename': directoryname,
                 'filesize': '-',
-                'filedate': storage.modified_time(path)
+                'filedate': self.storage.modified_time(path)
             })
 
         for filename in files:
@@ -53,25 +64,18 @@ class BrowserView(TemplateView):
                 'filepath': os.path.join(self.get_relpath(), filename),
                 'filetype': 'File',
                 'filename': filename,
-                'filesize': sizeof_fmt(storage.size(path)),
-                'filedate': storage.modified_time(path)
+                'filesize': sizeof_fmt(self.storage.size(path)),
+                'filedate': self.storage.modified_time(path)
             })
 
         return context
 
 
-class DetailView(TemplateView):
+class DetailView(FilemanagerMixin, TemplateView):
     template_name = 'filemanager/browser/filemanager_detail.html'
-
-    def get_relpath(self):
-        if 'path' in self.request.GET:
-            return self.request.GET['path']
-        return ''
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-
-        storage = DefaultStorage()
 
         path = self.get_relpath()
         filename = path.rsplit('/', 1)[-1]
@@ -80,8 +84,8 @@ class DetailView(TemplateView):
         context['file'] = {
             'filepath': path[:-len(filename)],
             'filename': filename,
-            'filesize': sizeof_fmt(storage.size(abspath)),
-            'filedate': storage.modified_time(abspath)
+            'filesize': sizeof_fmt(self.storage.size(abspath)),
+            'filedate': self.storage.modified_time(abspath)
         }
 
         return context
