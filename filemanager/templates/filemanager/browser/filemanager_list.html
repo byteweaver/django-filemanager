@@ -3,6 +3,19 @@
 {% load i18n %}
 
 {% block content %}
+<ul class="breadcrumb">
+  {% for breadcrumb in breadcrumbs %}
+  <li>
+    {% if forloop.last %}
+    {{breadcrumb.label}}
+    {% else %}
+    <a href="?path={{breadcrumb.path}}">{{breadcrumb.label}}</a>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+
+
 <table class="table">
   <thead>
     <tr>

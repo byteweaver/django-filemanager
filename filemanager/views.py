@@ -4,7 +4,7 @@ from django.core.files.storage import DefaultStorage
 from django.views.generic import TemplateView
 
 from filemanager.settings import MEDIA_ROOT
-from filemanager.utils import sizeof_fmt
+from filemanager.utils import sizeof_fmt, generate_breadcrumbs
 
 
 def get_abspath(relpath):
@@ -25,6 +25,11 @@ class BrowserView(TemplateView):
         storage = DefaultStorage()
 
         path = self.get_relpath()
+
+        context['breadcrumbs'] = [{
+            'label': 'Filemanager',
+            'url': '',
+        }] + generate_breadcrumbs(path)
 
         context['files'] = []
 
