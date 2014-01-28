@@ -76,7 +76,6 @@ class DetailView(TemplateView):
         path = self.get_relpath()
         filename = path.rsplit('/', 1)[-1]
         abspath = get_abspath(path)
-        print(path)
 
         context['file'] = {
             'filepath': path[:-len(filename)],
