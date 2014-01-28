@@ -16,7 +16,7 @@ setup(
     license='BSD',
     author='byteweaver',
     author_email='contact@byteweaver.org',
-    url='https://github.com/byteweaver/django-reusable-app-template',
+    url='https://github.com/byteweaver/django-filemanager',
     packages=find_packages(),
     include_package_data=True,
     classifiers=[
