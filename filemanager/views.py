@@ -1,5 +1,4 @@
 import json
-import os
 
 from django.views.generic import TemplateView, FormView
 from django.views.generic.base import View
@@ -8,18 +7,10 @@ from django.http import HttpResponseBadRequest
 from django.core.urlresolvers import reverse_lazy
 
 from filemanager.forms import DirectoryCreateForm
-from filemanager.settings import STORAGE
-from filemanager.utils import sizeof_fmt
 from filemanager.core import Filemanager
 
 
 class FilemanagerMixin(object):
-    def __init__(self, *args, **kwargs):
-
-        self.storage = STORAGE
-
-        return super(FilemanagerMixin, self).__init__(*args, **kwargs)
-
     def dispatch(self, request, *args, **kwargs):
         params = dict(request.GET)
         params.update(dict(request.POST))
