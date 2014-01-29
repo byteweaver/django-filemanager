@@ -53,32 +53,27 @@ class BrowserView(FilemanagerMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(BrowserView, self).get_context_data(**kwargs)
 
-        path = self.get_relpath()
-
         context['files'] = []
 
-        browse_path = os.path.join(MEDIA_ROOT, path)
-
-        directories, files = self.storage.listdir(browse_path)
+        directories, files = self.storage.listdir(self.fm.location)
 
         for directoryname in directories:
-            path = get_abspath(os.path.join(browse_path, directoryname))
             context['files'].append({
-                'filepath': os.path.join(self.get_relpath(), directoryname),
+                'filepath': os.path.join(self.fm.path, directoryname),
                 'filetype': 'Directory',
                 'filename': directoryname,
                 'filesize': '-',
-                'filedate': self.storage.modified_time(path)
+                'filedate': self.storage.modified_time(os.path.join(self.fm.location, directoryname))
             })
 
         for filename in files:
-            path = get_abspath(os.path.join(browse_path, filename))
+            abspath = os.path.join(self.fm.location, filename)
             context['files'].append({
-                'filepath': os.path.join(self.get_relpath(), filename),
+                'filepath': os.path.join(self.fm.path, filename),
                 'filetype': 'File',
                 'filename': filename,
-                'filesize': sizeof_fmt(self.storage.size(path)),
-                'filedate': self.storage.modified_time(path)
+                'filesize': sizeof_fmt(self.storage.size(abspath)),
+                'filedate': self.storage.modified_time(abspath)
             })
 
         return context
