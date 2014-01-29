@@ -37,4 +37,7 @@
     {% endfor %}
   </tbody>
 </table>
+<div>
+  <a href="{% url 'filemanager:upload' %}?path={{path}}">{% trans "Upload" %}</a>
+</div>
 {% endblock %}
