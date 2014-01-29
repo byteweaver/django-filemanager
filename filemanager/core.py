@@ -1,8 +1,9 @@
 import os
 
 from django.conf import settings
+from django.core.files.base import ContentFile
 
-from filemanager.settings import DIRECTORY
+from filemanager.settings import DIRECTORY, STORAGE
 
 
 class Filemanager(object):
@@ -50,3 +51,12 @@ class Filemanager(object):
             'path': self.path,
             'breadcrumbs': self.get_breadcrumbs(),
         })
+
+    def create_directory(self, name):
+        name = STORAGE.get_valid_name(name)
+        tmpfile = os.path.join(name, '.tmp')
+
+        path = os.path.join(self.path, tmpfile)
+
+        STORAGE.save(path, ContentFile(''))
+        STORAGE.delete(path)

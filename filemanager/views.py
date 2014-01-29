@@ -6,7 +6,6 @@ from django.views.generic.base import View
 from django.shortcuts import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.core.urlresolvers import reverse_lazy
-from django.core.files.base import ContentFile
 
 from filemanager.forms import DirectoryCreateForm
 from filemanager.settings import STORAGE
@@ -131,13 +130,5 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
         return reverse_lazy('filemanager:browser') + '?path=' + self.fm.path
 
     def form_valid(self, form):
-        directory_name = self.storage.get_valid_name(form.cleaned_data.get('directory_name'))
-
-        directory_path = os.path.join(directory_name, '.tmp')
-
-        path = os.path.join(self.fm.path, directory_path)
-
-        self.storage.save(path, ContentFile(''))
-        self.storage.delete(path)
-
+        self.fm.create_directory(form.cleaned_data.get('directory_name'))
         return super(DirectoryCreateView, self).form_valid(form)
