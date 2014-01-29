@@ -1,6 +1,10 @@
+import json
 import os
 
 from django.views.generic import TemplateView
+from django.views.generic.base import View
+from django.shortcuts import HttpResponse
+from django.http import HttpResponseBadRequest
 
 from filemanager.settings import MEDIA_ROOT, STORAGE
 from filemanager.utils import sizeof_fmt, generate_breadcrumbs
@@ -94,3 +98,26 @@ class DetailView(FilemanagerMixin, TemplateView):
 
 class UploadView(FilemanagerMixin, TemplateView):
     template_name = 'filemanager/filemanager_upload.html'
+
+
+class UploadFileView(FilemanagerMixin, View):
+    def get_relpath(self):
+        if 'path' in self.request.POST:
+            return self.request.POST['path']
+        return ''
+
+    def post(self, request, *args, **kwargs):
+        if len(request.FILES) != 1:
+            return HttpResponseBadRequest("Just a single file please.")
+
+        filedata = request.FILES['files[]']
+
+        filepath = os.path.join(self.get_relpath(), filedata.name)
+
+        # TODO: get filepath and validate characters in name, validate mime type and extension
+
+        self.storage.save(filepath, filedata)
+
+        return HttpResponse(json.dumps({
+            'files': [{'name': filedata.name}],
+        }))
