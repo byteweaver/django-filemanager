@@ -142,7 +142,9 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
         return reverse_lazy('filemanager:browser') + '?path=' + self.get_relpath()
 
     def form_valid(self, form):
-        directory_path = os.path.join(form.cleaned_data.get('directory_name'), '.tmp')
+        directory_name = self.storage.get_valid_name(form.cleaned_data.get('directory_name'))
+
+        directory_path = os.path.join(directory_name, '.tmp')
 
         path = os.path.join(self.get_relpath(), directory_path)
 
