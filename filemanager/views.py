@@ -95,7 +95,8 @@ class DetailView(FilemanagerMixin, TemplateView):
             'filepath': path[:-len(filename)],
             'filename': filename,
             'filesize': sizeof_fmt(self.storage.size(abspath)),
-            'filedate': self.storage.modified_time(abspath)
+            'filedate': self.storage.modified_time(abspath),
+            'fileurl': self.storage.url(path),
         }
 
         return context
