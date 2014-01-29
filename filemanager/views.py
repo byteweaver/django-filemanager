@@ -9,16 +9,9 @@ from django.core.urlresolvers import reverse_lazy
 from django.core.files.base import ContentFile
 
 from filemanager.forms import DirectoryCreateForm
-from filemanager.settings import MEDIA_ROOT, MEDIA_URL, STORAGE
+from filemanager.settings import STORAGE
 from filemanager.utils import sizeof_fmt
 from filemanager.core import Filemanager
-
-
-def get_abspath(relpath):
-    return os.path.join(MEDIA_ROOT, relpath)
-
-def get_absurl(relurl):
-    return os.path.join(MEDIA_URL, relurl)
 
 
 class FilemanagerMixin(object):
@@ -28,23 +21,25 @@ class FilemanagerMixin(object):
 
         return super(FilemanagerMixin, self).__init__(*args, **kwargs)
 
+    def dispatch(self, request, *args, **kwargs):
+        params = dict(request.GET)
+        params.update(dict(request.POST))
+
+        self.fm = Filemanager()
+        if 'path' in params and len(params['path'][0]) > 0:
+            self.fm.update_path(params['path'][0])
+
+        return super(FilemanagerMixin, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, *args, **kwargs):
         context = super(FilemanagerMixin, self).get_context_data(*args, **kwargs)
 
-        self.fm = Filemanager(self.get_relpath())
         self.fm.patch_context_data(context)
 
         if hasattr(self, 'extra_breadcrumbs') and isinstance(self.extra_breadcrumbs, list):
             context['breadcrumbs'] += self.extra_breadcrumbs
 
         return context
-
-    def get_relpath(self):
-        if 'path' in self.request.GET and len(self.request.GET['path']) > 0:
-            return os.path.relpath(self.request.GET['path'])
-        if 'path' in self.request.POST and len(self.request.POST['path']) > 0:
-            return os.path.relpath(self.request.POST['path'])
-        return ''
 
 
 class BrowserView(FilemanagerMixin, TemplateView):
@@ -113,7 +108,7 @@ class UploadFileView(FilemanagerMixin, View):
 
         filedata = request.FILES['files[]']
 
-        filepath = os.path.join(self.get_relpath(), self.storage.get_valid_name(filedata.name))
+        filepath = os.path.join(self.fm.path, self.storage.get_valid_name(filedata.name))
 
         # TODO: get filepath and validate characters in name, validate mime type and extension
 
@@ -133,14 +128,14 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
     }]
 
     def get_success_url(self):
-        return reverse_lazy('filemanager:browser') + '?path=' + self.get_relpath()
+        return reverse_lazy('filemanager:browser') + '?path=' + self.fm.path
 
     def form_valid(self, form):
         directory_name = self.storage.get_valid_name(form.cleaned_data.get('directory_name'))
 
         directory_path = os.path.join(directory_name, '.tmp')
 
-        path = os.path.join(self.get_relpath(), directory_path)
+        path = os.path.join(self.fm.path, directory_path)
 
         self.storage.save(path, ContentFile(''))
         self.storage.delete(path)
