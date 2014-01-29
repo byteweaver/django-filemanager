@@ -99,6 +99,17 @@ class DetailView(FilemanagerMixin, TemplateView):
 class UploadView(FilemanagerMixin, TemplateView):
     template_name = 'filemanager/filemanager_upload.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(UploadView, self).get_context_data(*args, **kwargs)
+
+        # add an upload entry to the end of our breadcrumbs list
+        context['breadcrumbs'].append({
+            'path': '#',
+            'label': 'Upload'
+        })
+
+        return context
+
 
 class UploadFileView(FilemanagerMixin, View):
     def get_relpath(self):
