@@ -38,6 +38,7 @@
   </tbody>
 </table>
 <div>
-  <a href="{% url 'filemanager:upload' %}?path={{path}}">{% trans "Upload" %}</a>
+  <a href="{% url 'filemanager:create-directory' %}?path={{path}}" class="btn btn-default">{% trans "Create directory" %}</a>
+  <a href="{% url 'filemanager:upload' %}?path={{path}}" class="btn btn-default">{% trans "Upload" %}</a>
 </div>
 {% endblock %}
