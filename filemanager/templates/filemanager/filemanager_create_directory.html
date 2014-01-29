@@ -3,6 +3,8 @@
 {% load i18n %}
 
 {% block content %}
+{% include "filemanager/filemanager_breadcrumbs.html" %}
+
 <form method="post" action="{% url 'filemanager:create-directory' %}?path={{path}}">
   {% csrf_token %}
   <input type="hidden" name="path" value="{{path}}">
