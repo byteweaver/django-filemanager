@@ -105,16 +105,11 @@ class UploadFileView(FilemanagerMixin, View):
         if len(request.FILES) != 1:
             return HttpResponseBadRequest("Just a single file please.")
 
-        filedata = request.FILES['files[]']
-
-        filepath = os.path.join(self.fm.path, self.storage.get_valid_name(filedata.name))
-
         # TODO: get filepath and validate characters in name, validate mime type and extension
-
-        self.storage.save(filepath, filedata)
+        filename = self.fm.upload_file(filedata = request.FILES['files[]'])
 
         return HttpResponse(json.dumps({
-            'files': [{'name': filedata.name}],
+            'files': [{'name': filename}],
         }))
 
 

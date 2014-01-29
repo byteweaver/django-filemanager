@@ -52,6 +52,11 @@ class Filemanager(object):
             'breadcrumbs': self.get_breadcrumbs(),
         })
 
+    def upload_file(self, filedata):
+        filename = STORAGE.get_valid_name(filedata.name)
+        STORAGE.save(os.path.join(self.path, filename), filedata)
+        return filename
+
     def create_directory(self, name):
         name = STORAGE.get_valid_name(name)
         tmpfile = os.path.join(name, '.tmp')
