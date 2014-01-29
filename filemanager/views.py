@@ -150,3 +150,14 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
         self.storage.delete(path)
 
         return super(DirectoryCreateView, self).form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DirectoryCreateView, self).get_context_data(*args, **kwargs)
+
+        # add an upload entry to the end of our breadcrumbs list
+        context['breadcrumbs'].append({
+            'path': '#',
+            'label': 'Create directory'
+        })
+
+        return context
