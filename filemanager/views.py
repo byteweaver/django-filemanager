@@ -89,3 +89,7 @@ class DetailView(FilemanagerMixin, TemplateView):
         }
 
         return context
+
+
+class UploadView(FilemanagerMixin, TemplateView):
+    template_name = 'filemanager/filemanager_upload.html'
