@@ -26,3 +26,21 @@ class Filemanager(object):
         path = '/'.join([i for i in path.split('/') if i])
 
         return path
+
+    def get_breadcrumbs(self):
+        breadcrumbs = [{
+            'label': 'Filemanager',
+            'path': '',
+        }]
+
+        parts = self.path.split('/')
+
+        path = ''
+        for part in parts:
+            path = os.path.join(path, part)
+            breadcrumbs.append({
+                'label': part,
+                'path': path,
+            })
+
+        return breadcrumbs

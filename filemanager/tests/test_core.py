@@ -20,3 +20,6 @@ class FilemanagerTest(TestCase):
         self.fm.update_path('/folder/')
         self.assertEqual(self.fm.path, 'folder')
         self.assertEqual(self.fm.abspath, 'uploads/folder')
+
+    def test_get_breadcrumbs(self):
+        self.assertEqual([{'label': 'Filemanager', 'path': ''}], self.fm.get_breadcrumbs())
