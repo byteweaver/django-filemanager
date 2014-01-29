@@ -1,9 +1,8 @@
 import os
 
-from django.core.files.storage import DefaultStorage
 from django.views.generic import TemplateView
 
-from filemanager.settings import MEDIA_ROOT
+from filemanager.settings import MEDIA_ROOT, STORAGE
 from filemanager.utils import sizeof_fmt, generate_breadcrumbs
 
 
@@ -14,7 +13,7 @@ def get_abspath(relpath):
 class FilemanagerMixin(object):
     def __init__(self, *args, **kwargs):
 
-        self.storage = DefaultStorage()
+        self.storage = STORAGE
 
         return super(FilemanagerMixin, self).__init__(*args, **kwargs)
 
