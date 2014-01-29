@@ -84,7 +84,7 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
     }]
 
     def get_success_url(self):
-        return reverse_lazy('filemanager:browser') + '?path=' + self.fm.path
+        return '%s?path=%s' % (reverse_lazy('filemanager:browser'), self.fm.path)
 
     def form_valid(self, form):
         self.fm.create_directory(form.cleaned_data.get('directory_name'))
