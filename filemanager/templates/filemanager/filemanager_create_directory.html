@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<form method="post" action="{% url 'filemanager:create-directory' %}?path={{path}}">
+  {% csrf_token %}
+  <input type="hidden" name="path" value="{{path}}">
+  {{form.as_p}}
+  <p>
+    <input type="submit" class="btn btn-default" value="{% trans "Create directory" %}">
+  </p>
+</form>
+{% endblock %}
