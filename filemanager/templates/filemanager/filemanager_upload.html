@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load i18n staticfiles %}
+
+{% block content %}
+{% include "filemanager/filemanager_breadcrumbs.html" %}
+
+<form id="fileupload" data-url="{% url 'filemanager:upload-file' %}">
+  <input type="hidden" name="path" value="{{path}}">
+  <input type="file" name="files[]" multiple>
+</form>
+
+<script src="{% static 'js/jquery-2.1.0.min.js' %} "></script>
+<script src="{% static 'js/vendor/jquery.ui.widget.js' %} "></script>
+<script src="{% static 'js/jquery.iframe-transport.js' %} "></script>
+<script src="{% static 'js/jquery.fileupload.js' %} "></script>
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+      dataType: 'json',
+      done: function(e, data) {
+        $.each(data.result.files, function (index, file) {
+        $('<p/>').text(file.name).appendTo(document.body);
+      });
+    }
+  });
+});
+</script>
+{% endblock %}
