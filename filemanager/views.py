@@ -34,6 +34,9 @@ class FilemanagerMixin(object):
         self.fm = Filemanager(self.get_relpath())
         self.fm.patch_context_data(context)
 
+        if hasattr(self, 'extra_breadcrumbs') and isinstance(self.extra_breadcrumbs, list):
+            context['breadcrumbs'] += self.extra_breadcrumbs
+
         return context
 
     def get_relpath(self):
@@ -104,17 +107,10 @@ class DetailView(FilemanagerMixin, TemplateView):
 
 class UploadView(FilemanagerMixin, TemplateView):
     template_name = 'filemanager/filemanager_upload.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(UploadView, self).get_context_data(*args, **kwargs)
-
-        # add an upload entry to the end of our breadcrumbs list
-        context['breadcrumbs'].append({
-            'path': '#',
-            'label': 'Upload'
-        })
-
-        return context
+    extra_breadcrumbs = [{
+        'path': '#',
+        'label': 'Upload'
+    }]
 
 
 class UploadFileView(FilemanagerMixin, View):
@@ -138,6 +134,10 @@ class UploadFileView(FilemanagerMixin, View):
 class DirectoryCreateView(FilemanagerMixin, FormView):
     template_name = 'filemanager/filemanager_create_directory.html'
     form_class = DirectoryCreateForm
+    extra_breadcrumbs = [{
+        'path': '#',
+        'label': 'Create directory'
+    }]
 
     def get_success_url(self):
         return reverse_lazy('filemanager:browser') + '?path=' + self.get_relpath()
@@ -153,14 +153,3 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
         self.storage.delete(path)
 
         return super(DirectoryCreateView, self).form_valid(form)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(DirectoryCreateView, self).get_context_data(*args, **kwargs)
-
-        # add an upload entry to the end of our breadcrumbs list
-        context['breadcrumbs'].append({
-            'path': '#',
-            'label': 'Create directory'
-        })
-
-        return context
