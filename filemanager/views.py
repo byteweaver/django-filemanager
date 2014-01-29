@@ -29,8 +29,8 @@ class FilemanagerMixin(object):
         return context
 
     def get_relpath(self):
-        if 'path' in self.request.GET:
-            return self.request.GET['path']
+        if 'path' in self.request.GET and len(self.request.GET['path']) > 0:
+            return os.path.relpath(self.request.GET['path'])
         return ''
 
 
