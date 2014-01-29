@@ -9,12 +9,15 @@ from django.core.urlresolvers import reverse_lazy
 from django.core.files.base import ContentFile
 
 from filemanager.forms import DirectoryCreateForm
-from filemanager.settings import MEDIA_ROOT, STORAGE
+from filemanager.settings import MEDIA_ROOT, MEDIA_URL, STORAGE
 from filemanager.utils import sizeof_fmt, generate_breadcrumbs
 
 
 def get_abspath(relpath):
     return os.path.join(MEDIA_ROOT, relpath)
+
+def get_absurl(relurl):
+    return os.path.join(MEDIA_URL, relurl)
 
 
 class FilemanagerMixin(object):
@@ -96,7 +99,7 @@ class DetailView(FilemanagerMixin, TemplateView):
             'filename': filename,
             'filesize': sizeof_fmt(self.storage.size(abspath)),
             'filedate': self.storage.modified_time(abspath),
-            'fileurl': self.storage.url(path),
+            'fileurl': self.storage.url(get_absurl(path)),
         }
 
         return context
