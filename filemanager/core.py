@@ -63,6 +63,28 @@ class Filemanager(object):
             'fileurl': self.url,
         }
 
+    def directory_list(self):
+        listing = []
+
+        directories, files = STORAGE.listdir(self.location)
+
+        def _helper(name, filetype):
+            return {
+                'filepath': os.path.join(self.path, name),
+                'filetype': filetype,
+                'filename': name,
+                'filedate': STORAGE.modified_time(os.path.join(self.path, name)),
+                'filesize': sizeof_fmt(STORAGE.size(os.path.join(self.path, name))),
+            }
+
+        for directoryname in directories:
+            listing.append(_helper(directoryname, 'Directory'))
+
+        for filename in files:
+            listing.append(_helper(filename, 'File'))
+
+        return listing
+
     def upload_file(self, filedata):
         filename = STORAGE.get_valid_name(filedata.name)
         STORAGE.save(os.path.join(self.path, filename), filedata)

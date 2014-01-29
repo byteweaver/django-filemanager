@@ -47,28 +47,7 @@ class BrowserView(FilemanagerMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(BrowserView, self).get_context_data(**kwargs)
 
-        context['files'] = []
-
-        directories, files = self.storage.listdir(self.fm.location)
-
-        for directoryname in directories:
-            context['files'].append({
-                'filepath': os.path.join(self.fm.path, directoryname),
-                'filetype': 'Directory',
-                'filename': directoryname,
-                'filesize': '-',
-                'filedate': self.storage.modified_time(os.path.join(self.fm.location, directoryname))
-            })
-
-        for filename in files:
-            abspath = os.path.join(self.fm.location, filename)
-            context['files'].append({
-                'filepath': os.path.join(self.fm.path, filename),
-                'filetype': 'File',
-                'filename': filename,
-                'filesize': sizeof_fmt(self.storage.size(abspath)),
-                'filedate': self.storage.modified_time(abspath)
-            })
+        context['files'] = self.fm.directory_list()
 
         return context
 
