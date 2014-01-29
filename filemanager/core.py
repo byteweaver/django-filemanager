@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 
 from filemanager.settings import DIRECTORY, STORAGE
+from filemanager.utils import sizeof_fmt
 
 
 class Filemanager(object):
@@ -51,6 +52,16 @@ class Filemanager(object):
             'path': self.path,
             'breadcrumbs': self.get_breadcrumbs(),
         })
+
+    def file_details(self):
+        filepath, filename = self.path.rsplit('/', 1)
+        return {
+            'filepath': filepath,
+            'filename': filename,
+            'filesize': sizeof_fmt(STORAGE.size(self.location)),
+            'filedate': STORAGE.modified_time(self.location),
+            'fileurl': self.url,
+        }
 
     def upload_file(self, filedata):
         filename = STORAGE.get_valid_name(filedata.name)

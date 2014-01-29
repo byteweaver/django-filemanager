@@ -79,15 +79,7 @@ class DetailView(FilemanagerMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
 
-        filename = self.fm.path.rsplit('/', 1)[-1]
-
-        context['file'] = {
-            'filepath': self.fm.path[:-len(filename)],
-            'filename': filename,
-            'filesize': sizeof_fmt(self.storage.size(self.fm.location)),
-            'filedate': self.storage.modified_time(self.fm.location),
-            'fileurl': self.fm.url,
-        }
+        context['file'] = self.fm.file_details()
 
         return context
 
