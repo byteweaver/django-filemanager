@@ -123,7 +123,7 @@ class UploadFileView(FilemanagerMixin, View):
 
         filedata = request.FILES['files[]']
 
-        filepath = os.path.join(self.get_relpath(), filedata.name)
+        filepath = os.path.join(self.get_relpath(), self.storage.get_valid_name(filedata.name))
 
         # TODO: get filepath and validate characters in name, validate mime type and extension
 
