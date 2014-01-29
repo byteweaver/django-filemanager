@@ -10,7 +10,8 @@ from django.core.files.base import ContentFile
 
 from filemanager.forms import DirectoryCreateForm
 from filemanager.settings import MEDIA_ROOT, MEDIA_URL, STORAGE
-from filemanager.utils import sizeof_fmt, generate_breadcrumbs
+from filemanager.utils import sizeof_fmt
+from filemanager.core import Filemanager
 
 
 def get_abspath(relpath):
@@ -31,11 +32,10 @@ class FilemanagerMixin(object):
         context = super(FilemanagerMixin, self).get_context_data(*args, **kwargs)
 
         context['path'] = self.get_relpath()
+        self.fm = Filemanager(self.get_relpath())
 
-        context['breadcrumbs'] = [{
-            'label': 'Filemanager',
-            'url': '',
-        }] + generate_breadcrumbs(self.get_relpath())
+
+        context['breadcrumbs'] = self.fm.get_breadcrumbs()
 
         return context
 
