@@ -33,7 +33,7 @@ class Filemanager(object):
             'path': '',
         }]
 
-        parts = self.path.split('/')
+        parts = [e for e in self.path.split('/') if e]
 
         path = ''
         for part in parts:
