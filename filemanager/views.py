@@ -36,6 +36,8 @@ class FilemanagerMixin(object):
     def get_relpath(self):
         if 'path' in self.request.GET and len(self.request.GET['path']) > 0:
             return os.path.relpath(self.request.GET['path'])
+        if 'path' in self.request.POST and len(self.request.POST['path']) > 0:
+            return os.path.relpath(self.request.POST['path'])
         return ''
 
 
@@ -112,11 +114,6 @@ class UploadView(FilemanagerMixin, TemplateView):
 
 
 class UploadFileView(FilemanagerMixin, View):
-    def get_relpath(self):
-        if 'path' in self.request.POST:
-            return self.request.POST['path']
-        return ''
-
     def post(self, request, *args, **kwargs):
         if len(request.FILES) != 1:
             return HttpResponseBadRequest("Just a single file please.")
