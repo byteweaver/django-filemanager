@@ -1,11 +1,14 @@
 import json
 import os
 
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django.views.generic.base import View
 from django.shortcuts import HttpResponse
 from django.http import HttpResponseBadRequest
+from django.core.urlresolvers import reverse_lazy
+from django.core.files.base import ContentFile
 
+from filemanager.forms import DirectoryCreateForm
 from filemanager.settings import MEDIA_ROOT, STORAGE
 from filemanager.utils import sizeof_fmt, generate_breadcrumbs
 
@@ -129,3 +132,21 @@ class UploadFileView(FilemanagerMixin, View):
         return HttpResponse(json.dumps({
             'files': [{'name': filedata.name}],
         }))
+
+
+class DirectoryCreateView(FilemanagerMixin, FormView):
+    template_name = 'filemanager/filemanager_create_directory.html'
+    form_class = DirectoryCreateForm
+
+    def get_success_url(self):
+        return reverse_lazy('filemanager:browser') + '?path=' + self.get_relpath()
+
+    def form_valid(self, form):
+        directory_path = os.path.join(form.cleaned_data.get('directory_name'), '.tmp')
+
+        path = os.path.join(self.get_relpath(), directory_path)
+
+        self.storage.save(path, ContentFile(''))
+        self.storage.delete(path)
+
+        return super(DirectoryCreateView, self).form_valid(form)
