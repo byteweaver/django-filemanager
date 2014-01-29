@@ -31,11 +31,8 @@ class FilemanagerMixin(object):
     def get_context_data(self, *args, **kwargs):
         context = super(FilemanagerMixin, self).get_context_data(*args, **kwargs)
 
-        context['path'] = self.get_relpath()
         self.fm = Filemanager(self.get_relpath())
-
-
-        context['breadcrumbs'] = self.fm.get_breadcrumbs()
+        self.fm.patch_context_data(context)
 
         return context
 

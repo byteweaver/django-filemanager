@@ -44,3 +44,9 @@ class Filemanager(object):
             })
 
         return breadcrumbs
+
+    def patch_context_data(self, context):
+        context.update({
+            'path': self.path,
+            'breadcrumbs': self.get_breadcrumbs(),
+        })
