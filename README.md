@@ -1,13 +1,13 @@
 # django-filemanager
 
-Template for reusable django applications.
-
-All following sections are just dummies and may not work as excepted.
+A simple and standalone file manager and browser for django projects. Supports multiple instances which can be used within the admin area or for the frontend as well.
 
 ## Key features
 
-* Reusable template for new reusable django applications
-* ...
+* Standalone file browser and manager
+* No external dependencies except django
+* Feature rich uploader included (jQuery File Upload)
+* Based on django storage backend
 
 ## Installation
 
@@ -31,7 +31,7 @@ Hook this app into your ``urls.py``:
 
     urlpatterns = patterns('',
         ...
-        url(r'^your-url/$', include('filemanager.urls', namespace='{{ app_name }}')),
+        url(r'^your-url/$', include('filemanager.urls', namespace='filemanager')),
         ...
     )
 
