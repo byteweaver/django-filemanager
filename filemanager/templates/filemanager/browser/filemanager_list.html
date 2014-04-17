@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n static %}
 
 {% block content %}
 {% include "filemanager/filemanager_breadcrumbs.html" %}
@@ -8,16 +8,18 @@
 <table class="table">
   <thead>
     <tr>
+      {% if popup %}<th>{% trans "Select" %}</th>{% endif %}
       <th>{% trans "Type" %}</th>
       <th>{% trans "Name" %}</th>
       <th>{% trans "Size" %}</th>
       <th>{% trans "Date" %}</th>
-      <th>{% trans "Actions" %}</th>
+      {% if not popup %}<th>{% trans "Actions" %}</th>{% endif %}
     </tr>
   </thead>
   <tbody>
     {% for file in files %}
     <tr>
+      {% if popup %}<td><a href="javascript: Filemanager.select('{{file.filepath}}');">{% trans "Select" %}</a></td>{% endif %}
       <td>{{file.filetype}}</td>
       {% if file.filetype == "Directory" %}
       <td><a href="?path={{file.filepath}}">{{file.filename}}</a></td>
@@ -26,7 +28,7 @@
       {% endif %}
       <td>{{file.filesize}}</td>
       <td>{{file.filedate}}</td>
-      <td><a href="{% url 'filemanager:detail' %}?path={{file.filepath}}">{% trans "Details" %}</a></td>
+      {% if not popup %}<td><a href="{% url 'filemanager:detail' %}?path={{file.filepath}}">{% trans "Details" %}</a></td>{% endif %}
     </tr>
     {% empty %}
     <tr>
@@ -41,4 +43,8 @@
   <a href="{% url 'filemanager:create-directory' %}?path={{path}}" class="btn btn-default">{% trans "Create directory" %}</a>
   <a href="{% url 'filemanager:upload' %}?path={{path}}" class="btn btn-default">{% trans "Upload" %}</a>
 </div>
+
+{% if popup %}
+<script src="{% static "js/filemanager.js" %}"></script>
+{% endif %}
 {% endblock %}
