@@ -25,6 +25,12 @@ class FilemanagerWidget(Input):
         final_attrs['path'] = self.path
         return render_to_string('filemanager/filemanager_field.html', locals())
 
+    class Media:
+        css = {
+            'all': ('css/filemanager.css',),
+        }
+        js = ('js/filemanager.js',)
+
 
 class FilemanagerFormField(forms.CharField):
     def __init__(self, max_length=None, min_length=None, path=None, *args, **kwargs):
