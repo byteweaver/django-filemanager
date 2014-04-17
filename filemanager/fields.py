@@ -15,4 +15,20 @@ class FilemanagerFormField(forms.CharField):
 
 
 class FilemanagerField(models.CharField):
-    pass
+    description = "FilemanagerField"
+    __metaclass__ = models.SubfieldBase
+
+    def __init__(self, *args, **kwargs):
+        self.path = kwargs.pop('path', '')
+        return super(FilemanagerField, self).__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        attrs = {
+            'path': self.path,
+        }
+        defaults = {
+            'form_class': FilemanagerFormField,
+            'widget': FilemanagerWidget(attrs=attrs),
+            'path': self.path,
+        }
+        return super(FilemanagerField, self).formfield(**defaults)
