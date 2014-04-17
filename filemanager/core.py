@@ -56,6 +56,7 @@ class Filemanager(object):
     def file_details(self):
         filename = self.path.rsplit('/', 1)[-1]
         return {
+            'directory': os.path.dirname(self.path),
             'filepath': self.path,
             'filename': filename,
             'filesize': sizeof_fmt(STORAGE.size(self.location)),
