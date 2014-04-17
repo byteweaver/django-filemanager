@@ -19,7 +19,13 @@
   <tbody>
     {% for file in files %}
     <tr>
-      {% if popup %}<td><a href="javascript: Filemanager.select('{{file.filepath}}');">{% trans "Select" %}</a></td>{% endif %}
+      {% if popup %}
+      {% if file.filetype == "Directory" %}
+      <td></td>
+      {% else %}
+      <td><a href="javascript: Filemanager.select('{{file.filepath}}');">{% trans "Select" %}</a></td>
+      {% endif %}
+      {% endif %}
       <td>{{file.filetype}}</td>
       {% if file.filetype == "Directory" %}
       <td><a href="?path={{file.filepath}}">{{file.filename}}</a></td>
