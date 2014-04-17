@@ -40,6 +40,12 @@ class FilemanagerFormField(forms.CharField):
         self.path = path
         super(FilemanagerFormField, self).__init__(*args, **kwargs)
 
+    def clean(self, value):
+        value = super(FilemanagerFormField, self).clean(value)
+        if value == '':
+            return value
+        return value
+
 
 class FilemanagerField(models.CharField):
     description = "FilemanagerField"
@@ -48,6 +54,25 @@ class FilemanagerField(models.CharField):
     def __init__(self, *args, **kwargs):
         self.path = kwargs.pop('path', '')
         return super(FilemanagerField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        print("to_python", value)
+        if not value:
+            return value
+        return value
+
+    def get_prep_value(self, value):
+        print("get_prep_value", value)
+        if not value:
+            return value
+        return value
+
+    def value_to_string(self, obj):
+        print("value_to_string", obj)
+        value = self._get_val_from_obj(obj)
+        if not value:
+            return value
+        return value
 
     def formfield(self, **kwargs):
         attrs = {
