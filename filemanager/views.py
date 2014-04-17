@@ -35,9 +35,14 @@ class FilemanagerMixin(object):
 class BrowserView(FilemanagerMixin, TemplateView):
     template_name = 'filemanager/browser/filemanager_list.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.popup = self.request.GET.get('popup', 0) == '1'
+        return super(BrowserView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(BrowserView, self).get_context_data(**kwargs)
 
+        context['popup'] = self.popup
         context['files'] = self.fm.directory_list()
 
         return context
