@@ -18,6 +18,8 @@ class FilemanagerMixin(object):
         self.fm = Filemanager()
         if 'path' in params and len(params['path'][0]) > 0:
             self.fm.update_path(params['path'][0])
+        if 'popup' in params:
+            self.popup = params['popup']
 
         return super(FilemanagerMixin, self).dispatch(request, *args, **kwargs)
 
@@ -25,6 +27,9 @@ class FilemanagerMixin(object):
         context = super(FilemanagerMixin, self).get_context_data(*args, **kwargs)
 
         self.fm.patch_context_data(context)
+
+        if hasattr(self, 'popup'):
+            context['popup'] = self.popup
 
         if hasattr(self, 'extra_breadcrumbs') and isinstance(self.extra_breadcrumbs, list):
             context['breadcrumbs'] += self.extra_breadcrumbs
@@ -89,7 +94,10 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
     }]
 
     def get_success_url(self):
-        return '%s?path=%s' % (reverse_lazy('filemanager:browser'), self.fm.path)
+        url = '%s?path=%s' % (reverse_lazy('filemanager:browser'), self.fm.path)
+        if self.popup:
+            url += '&popup=1'
+        return url
 
     def form_valid(self, form):
         self.fm.create_directory(form.cleaned_data.get('directory_name'))

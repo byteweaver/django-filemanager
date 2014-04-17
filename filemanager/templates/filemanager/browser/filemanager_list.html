@@ -28,7 +28,7 @@
       {% endif %}
       <td>{{file.filetype}}</td>
       {% if file.filetype == "Directory" %}
-      <td><a href="?path={{file.filepath}}">{{file.filename}}</a></td>
+      <td><a href="?path={{file.filepath}}{% if popup %}&amp;popup=1{% endif %}">{{file.filename}}</a></td>
       {% else %}
       <td>{{file.filename}}</td>
       {% endif %}
@@ -46,8 +46,8 @@
   </tbody>
 </table>
 <div>
-  <a href="{% url 'filemanager:create-directory' %}?path={{path}}" class="btn btn-default">{% trans "Create directory" %}</a>
-  <a href="{% url 'filemanager:upload' %}?path={{path}}" class="btn btn-default">{% trans "Upload" %}</a>
+  <a href="{% url 'filemanager:create-directory' %}?path={{path}}{% if popup %}&amp;popup=1{% endif %}" class="btn btn-default">{% trans "Create directory" %}</a>
+  <a href="{% url 'filemanager:upload' %}?path={{path}}{% if popup %}&amp;popup=1{% endif %}" class="btn btn-default">{% trans "Upload" %}</a>
 </div>
 
 {% if popup %}
