@@ -8,3 +8,7 @@ class FilemanagerWidget(Input):
 
 class FilemanagerFormField(forms.CharField):
     pass
+
+
+class FilemanagerField(models.CharField):
+    pass
