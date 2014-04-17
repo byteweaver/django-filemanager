@@ -3,7 +3,7 @@ from django.forms.widgets import Input
 
 
 class FilemanagerWidget(Input):
-    pass
+    input_type = 'text'
 
 
 class FilemanagerFormField(forms.CharField):
