@@ -1,5 +1,7 @@
 from django import forms
+from django.core.urlresolvers import reverse
 from django.forms.widgets import Input
+from django.template.loader import render_to_string
 
 
 class FilemanagerWidget(Input):
@@ -13,6 +15,15 @@ class FilemanagerWidget(Input):
         else:
             self.attrs = {}
         super(FilemanagerWidget, self).__init__(attrs)
+
+    def render(self, name, value, attrs=None):
+        url = reverse("filemanager:browser")
+        if value is None:
+            value = ""
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        final_attrs['url'] = url
+        final_attrs['path'] = self.path
+        return render_to_string('filemanager/filemanager_field.html', locals())
 
 
 class FilemanagerFormField(forms.CharField):
