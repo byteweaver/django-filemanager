@@ -5,6 +5,15 @@ from django.forms.widgets import Input
 class FilemanagerWidget(Input):
     input_type = 'text'
 
+    def __init__(self, attrs={}):
+        super(FilemanagerWidget, self).__init__(attrs)
+        self.path = attrs.get('path', '')
+        if attrs is not None:
+            self.attrs = attrs.copy()
+        else:
+            self.attrs = {}
+        super(FilemanagerWidget, self).__init__(attrs)
+
 
 class FilemanagerFormField(forms.CharField):
     def __init__(self, max_length=None, min_length=None, path=None, *args, **kwargs):
