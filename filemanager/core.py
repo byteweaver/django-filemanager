@@ -3,6 +3,7 @@ import os
 from django.conf import settings
 from django.core.files.base import ContentFile
 
+from filemanager import signals
 from filemanager.settings import DIRECTORY, STORAGE
 from filemanager.utils import sizeof_fmt
 
@@ -88,7 +89,10 @@ class Filemanager(object):
 
     def upload_file(self, filedata):
         filename = STORAGE.get_valid_name(filedata.name)
-        STORAGE.save(os.path.join(self.path, filename), filedata)
+        filepath = os.path.join(self.path, filename)
+        signals.filemanager_pre_upload.send(sender=self.__class__, filename=filename, path=self.path, filepath=filepath)
+        STORAGE.save(filepath, filedata)
+        signals.filemanager_post_upload.send(sender=self.__class__, filename=filename, path=self.path, filepath=filepath)
         return filename
 
     def create_directory(self, name):
