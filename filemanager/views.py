@@ -95,7 +95,7 @@ class DirectoryCreateView(FilemanagerMixin, FormView):
 
     def get_success_url(self):
         url = '%s?path=%s' % (reverse_lazy('filemanager:browser'), self.fm.path)
-        if self.popup:
+        if hasattr(self, 'popup') and self.popup:
             url += '&popup=1'
         return url
 
