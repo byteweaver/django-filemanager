@@ -31,7 +31,7 @@ Hook this app into your ``urls.py``:
 
     urlpatterns = patterns('',
         ...
-        url(r'^your-url/$', include('filemanager.urls', namespace='filemanager')),
+        url(r'^your-url/', include('filemanager.urls', namespace='filemanager')),
         ...
     )
 
